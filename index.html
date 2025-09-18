@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Gestão de Problemas - Ciclo PDCA</title>
+<link rel="stylesheet" href="gestao-problemas.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="app-container">
+    <h1>Sistema de Gestão de Problemas</h1>
+
+    <div class="nav-menu">
+        <button class="nav-btn active" data-tool="analise">Análise (Plan)</button>
+        <button class="nav-btn" data-tool="plano-de-acao">Plano de Ação (Plan)</button>
+        <button class="nav-btn" data-tool="ciclo-pdca">Execução e Verificação (Do/Check)</button>
+        <button class="nav-btn" data-tool="relatorio-geral">Relatório Geral</button>
+    </div>
+
+    <!-- PLAN: Análise da Causa-Raiz (Ishikawa) -->
+    <div class="tool-panel active" id="analise">
+        <h2>Análise da Causa-Raiz (Ishikawa)</h2>
+        <div class="form-section">
+            <label for="problema-ishikawa">Problema a ser analisado:</label>
+            <input type="text" id="problema-ishikawa" placeholder="Ex: Atraso na entrega do produto final">
+        </div>
+        
+        <div class="ishikawa-factors">
+            <div class="factor-column">
+                <h3>Pessoas</h3>
+                <textarea class="factor-input" data-factor="Pessoas" placeholder="Falta de treinamento, sobrecarga..."></textarea>
+            </div>
+            <div class="factor-column">
+                <h3>Processos</h3>
+                <textarea class="factor-input" data-factor="Processos" placeholder="Fluxo de trabalho ineficiente, falta de padrão..."></textarea>
+            </div>
+            <div class="factor-column">
+                <h3>Máquinas</h3>
+                <textarea class="factor-input" data-factor="Máquinas" placeholder="Equipamento obsoleto, falhas de manutenção..."></textarea>
+            </div>
+            <div class="factor-column">
+                <h3>Métodos</h3>
+                <textarea class="factor-input" data-factor="Métodos" placeholder="Procedimentos operacionais desatualizados..."></textarea>
+            </div>
+            <div class="factor-column">
+                <h3>Medição</h3>
+                <textarea class="factor-input" data-factor="Medição" placeholder="Instrumentos descalibrados, dados incorretos..."></textarea>
+            </div>
+            <div class="factor-column">
+                <h3>Meio Ambiente</h3>
+                <textarea class="factor-input" data-factor="Meio Ambiente" placeholder="Condições de iluminação, temperatura..."></textarea>
+            </div>
+        </div>
+        <div class="button-group">
+            <button id="save-ishikawa">Salvar Análise</button>
+            <button id="clear-ishikawa-btn" class="clear-btn">Limpar Campos</button>
+        </div>
+        <p id="ishikawa-status" class="status-msg"></p>
+    </div>
+
+    <!-- PLAN: Plano de Ação (5W2H) -->
+    <div class="tool-panel" id="plano-de-acao">
+        <h2>Plano de Ação (5W2H)</h2>
+        <div class="form-section">
+            <label for="plano-problema">Problema:</label>
+            <input type="text" id="plano-problema" placeholder="Problema relacionado à análise de causa-raiz.">
+        </div>
+
+        <div class="table-5w2h">
+            <div class="table-header">O quê? (What)</div>
+            <input type="text" id="5w2h-what" placeholder="O que será feito?">
+            
+            <div class="table-header">Por quê? (Why)</div>
+            <input type="text" id="5w2h-why" placeholder="Por que será feito?">
+            
+            <div class="table-header">Onde? (Where)</div>
+            <input type="text" id="5w2h-where" placeholder="Onde será feito?">
+            
+            <div class="table-header">Quem? (Who)</div>
+            <input type="text" id="5w2h-who" placeholder="Quem será o responsável?">
+            
+            <div class="table-header">Quando? (When)</div>
+            <input type="date" id="5w2h-when">
+            
+            <div class="table-header">Como? (How)</div>
+            <input type="text" id="5w2h-how" placeholder="Como será feito?">
+            
+            <div class="table-header">Quanto Custa? (How much)</div>
+            <input type="number" id="5w2h-how-much" placeholder="Custo estimado">
+        </div>
+        <div class="button-group">
+            <button id="save-5w2h">Salvar Plano de Ação</button>
+            <button id="clear-5w2h-btn" class="clear-btn">Limpar Campos</button>
+        </div>
+        <p id="plano-status" class="status-msg"></p>
+    </div>
+
+    <!-- DO & CHECK & ACT -->
+    <div class="tool-panel" id="ciclo-pdca">
+        <h2>Ciclo PDCA: Execução e Análise</h2>
+        
+        <!-- DO: Execução do Plano -->
+        <div class="form-section">
+            <h3>1. Fazer (Do) - Execução</h3>
+            <label for="execucao-plano">O que foi executado?</label>
+            <textarea id="execucao-plano" placeholder="Descreva as ações realizadas, incluindo quem, quando e se houve desvios do plano original."></textarea>
+            <div class="button-group">
+                <button id="save-execucao">Salvar Execução</button>
+                <button id="clear-execucao-btn" class="clear-btn">Limpar Campos</button>
+            </div>
+            <p id="execucao-status" class="status-msg"></p>
+        </div>
+        
+        <hr>
+        
+        <!-- CHECK: Verificação dos Resultados (Pareto) -->
+        <div class="form-section">
+            <h3>2. Checar (Check) - Verificação</h3>
+            <p>Insira os problemas e sua frequência de ocorrência **após a execução do plano** para priorizar as ações.</p>
+            <div id="pareto-inputs-container">
+                <!-- O primeiro item será adicionado via JS -->
+            </div>
+            <button id="add-pareto-item">+ Adicionar Item</button>
+        </div>
+        <div class="button-group">
+            <button id="generate-pareto">Gerar Gráfico e Análise</button>
+            <button id="clear-pareto-btn" class="clear-btn">Limpar Campos</button>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="pareto-chart"></canvas>
+        </div>
+        
+        <div class="pareto-analysis">
+            <h3>Análise dos Resultados (Pareto)</h3>
+            <p id="pareto-output"></p>
+        </div>
+
+        <hr>
+
+        <!-- ACT: Ação Corretiva e Padronização -->
+        <div class="form-section">
+            <h3>3. Agir (Act) - Ações e Padronização</h3>
+            <label for="acoes-corretivas">Ações Corretivas e Padronização:</label>
+            <textarea id="acoes-corretivas" placeholder="Descreva as ações para corrigir desvios, ou o que foi padronizado para manter a melhoria."></textarea>
+            <div class="button-group">
+                <button id="save-acoes">Salvar Ações e Padronização</button>
+                <button id="clear-acoes-btn" class="clear-btn">Limpar Campos</button>
+            </div>
+            <p id="acoes-status" class="status-msg"></p>
+        </div>
+    </div>
+
+    <!-- Relatório Geral -->
+    <div class="tool-panel" id="relatorio-geral">
+        <h2>Relatório Geral de Análise e Plano de Ação</h2>
+        <div id="relatorio-content">
+            <!-- O conteúdo do relatório será injetado aqui pelo JavaScript -->
+            <p>Clique em "Gerar Relatório" para ver o resumo completo.</p>
+        </div>
+        <div class="button-group">
+            <button id="generate-full-report">Gerar Relatório</button>
+            <button id="print-report" style="display:none;">Imprimir</button>
+            <button id="clear-all-data-btn" class="clear-btn">Limpar Todos os Dados</button>
+        </div>
+    </div>
+
+<footer class="main-footer">
+    <p>Desenvolvido Por: EDCELL-TECH</p>
+</footer>
+
+</div>
+
+<script src="gestao-problemas.js"></script>
+
+</body>
+</html>
